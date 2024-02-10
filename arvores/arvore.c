@@ -58,6 +58,73 @@ void add(Nodo *n, int valor)
     }
 }
 
+void rem(Nodo *n, int valor)
+{
+    Nodo *filho = n;
+    Nodo *pai;
+
+    do
+    {
+        pai = filho;
+
+        if (valor < filho->valor)
+        {
+            filho = filho->esq;
+        }
+        else if (valor > filho->valor)
+        {
+            filho = filho->dir;
+        }
+
+    } while (filho != NULL && filho->valor != valor);
+
+    if (filho != NULL)
+    {
+        if (filho->esq == NULL && filho->dir == NULL)
+        {
+            if (pai->esq == filho)
+                pai->esq = NULL;
+            if (pai->dir == filho)
+                pai->dir = NULL;
+        }
+
+        if (filho->esq != NULL && filho->dir == NULL)
+        {
+            if (pai->esq == filho)
+                pai->esq = filho->esq;
+            if (pai->dir == filho)
+                pai->dir = filho->esq;
+        }
+
+        if (filho->dir != NULL && filho->esq == NULL)
+        {
+            if (pai->esq == filho)
+                pai->esq = filho->dir;
+            if (pai->dir == filho)
+                pai->dir = filho->dir;
+        }
+
+        if (filho->esq != NULL && filho->dir != NULL)
+        {
+            if (filho->esq->dir == NULL)
+                filho->valor = filho->esq->valor;
+            else
+            {
+                Nodo *p = filho->esq;
+                Nodo *aux = p;
+
+                while (p->dir != NULL)
+                {
+                    aux = p;
+                    p = p->dir;
+                }
+                aux->dir = NULL;
+                filho->valor = p->valor;
+            }
+        }
+    }
+}
+
 int main()
 {
     Nodo *root = create(5);
@@ -65,6 +132,8 @@ int main()
     add(root, 1);
     add(root, 8);
     add(root, 4);
+
+    rem(root, 8);
 
     imprimir(root);
 
